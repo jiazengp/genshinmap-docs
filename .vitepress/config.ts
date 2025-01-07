@@ -1,13 +1,27 @@
 import { URL, fileURLToPath } from 'node:url'
+import { defineConfig } from 'vitepress'
+
 import { figure } from '@mdit/plugin-figure'
 import { imgSize, obsidianImageSize } from '@mdit/plugin-img-size'
 import { mark } from '@mdit/plugin-mark'
+import { spoiler } from '@mdit/plugin-spoiler'
 import { sub } from '@mdit/plugin-sub'
 import { sup } from '@mdit/plugin-sup'
-import { spoiler } from '@mdit/plugin-spoiler'
 import MarkdownItFootnote from 'markdown-it-footnote'
 import MarkdownItKbd from 'markdown-it-kbd-better'
-import Unocss from 'unocss/vite'
+import lightbox from './plugins/lightbox'
+
+import path from 'node:path'
+import UnoCSS from 'unocss/vite'
+
+import { enConfig } from './locales/en'
+import { jaConfig } from './locales/ja'
+import { zhConfig } from './locales/zh'
+
+import { cardPlugin } from './theme/markdown/card'
+import { colorPreviewPlugin } from './theme/markdown/colorPreview'
+import { timeline } from './theme/markdown/timeline'
+
 import type {
   DefaultTheme,
   HeadConfig,
@@ -18,18 +32,9 @@ import type {
   TransformPageContext,
   UserConfig,
 } from 'vitepress'
-import { defineConfig } from 'vitepress'
-
-import { enConfig } from './locales/en'
-import { jaConfig } from './locales/ja'
 import type { CustomConfig } from './locales/types'
-import { zhConfig } from './locales/zh'
-import { cardPlugin } from './theme/markdown/card'
-import { colorPreviewPlugin } from './theme/markdown/colorPreview'
-import { timeline } from './theme/markdown/timeline'
 
 const isProd = process.env.NODE_ENV === 'production'
-const commitRef = process.env.COMMIT_REF?.slice(0, 8) || 'dev'
 const productionHead: HeadConfig[] = [
   [
     'script',
@@ -103,7 +108,7 @@ const cfgDynamicHead = (pageData: PageData, siteConfig: SiteConfig): void => {
   ]
 
   pageData.frontmatter.head ??= []
-  pageData.frontmatter.head.splice(Infinity, 0, ...head)
+  pageData.frontmatter.head.splice(Number.POSITIVE_INFINITY, 0, ...head)
 }
 const cfgDynamicTitleTemplate = (
   pageData: PageData,
@@ -240,7 +245,7 @@ export default defineConfig({
     },
   },
   rewrites: {
-    'zh/:splat(.*)': ':splat',
+    'zh/:splat*': ':splat*',
   },
   locales: {
     root: {
@@ -374,6 +379,7 @@ export default defineConfig({
       return url.toLowerCase().includes('ignore')
     },
   ],
+  ...createConfigureFunction(),
   vite: {
     server: {
       host: true,
@@ -389,17 +395,20 @@ export default defineConfig({
             new URL('./theme/components/Footer.vue', import.meta.url),
           ),
         },
+        {
+          find: '@',
+          replacement: fileURLToPath(new URL('./theme', import.meta.url)),
+        },
       ],
     },
     plugins: [
       // https://github.com/antfu/unocss
-      Unocss(),
+      UnoCSS(),
     ],
     json: {
       stringify: true,
     },
   },
-  ...createConfigureFunction(),
   markdown: {
     image: {
       lazyLoading: true,
@@ -416,6 +425,7 @@ export default defineConfig({
       md.use(figure)
       md.use(timeline)
       md.use(spoiler)
+      md.use(lightbox)
       md.use(MarkdownItKbd, {
         presets: [
           {

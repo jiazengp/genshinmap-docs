@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useQRCode } from '@vueuse/integrations/useQRCode'
 import { useData, withBase } from 'vitepress'
-import { VPLink } from 'vitepress/theme'
 import { socialList } from '../composables/socialList'
 
 const { frontmatter, theme } = useData()
@@ -59,14 +58,15 @@ const qrcode = useQRCode(theme.value.footer.qrcodeLink)
             rel="noopener noreferrer"
             class="footer-sociallink"
             v-html="item.icon"
-          ></a>
+          >
+          </a>
         </div>
       </div>
     </footer>
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .footer-container {
   z-index: 1;
   position: relative;
@@ -288,7 +288,7 @@ const qrcode = useQRCode(theme.value.footer.qrcodeLink)
     border-radius: 25%;
   }
 
-  svg {
+  & ~ svg {
     width: 24px;
     height: 24px;
     fill: currentColor;

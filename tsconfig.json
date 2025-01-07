@@ -16,6 +16,7 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "paths": {
+      "@/*": ["./.vitepress/theme/*"],
       "vite": ["./node_modules/vite"]
     }
   },
@@ -25,7 +26,12 @@
     "**/.vitepress/**/*.vue",
     "**/components/**/*.ts",
     "**/components/**/*.tsx",
-    "**/components/**/*.vue"
+    "**/components/**/*.vue",
+    "**/composables/**/*.ts",
+    "**/stores/**/*.ts"
   ],
-  "exclude": ["**/node_modules/**", "**/dist/**"]
+  "exclude": ["**/node_modules/**", "**/dist/**"],
+  "vueCompilerOptions": {
+    "vitePressExtensions": [".md"]
+  }
 }

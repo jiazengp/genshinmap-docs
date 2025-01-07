@@ -1,10 +1,9 @@
 <script setup lang="ts">
+import { usePageInfoStore } from '@/stores/usePageInfo'
 import dayjs from 'dayjs'
 import { useData, useRoute } from 'vitepress'
 import { computed, ref, watch } from 'vue'
-import { getPageInfo } from '../apis/getPageInfo'
-import { pageview as PV } from '../apis/pageview'
-import { usePageInfoStore } from '../stores/pageinfo'
+import { getPageInfo } from '../apis/feedback/getPageInfo'
 
 const router = useRoute()
 const { page, theme } = useData()
@@ -66,6 +65,7 @@ updateData()
     fill: currentColor;
   }
 }
+
 .doc-info-right {
   justify-content: flex-start;
 }
